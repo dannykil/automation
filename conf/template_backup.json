@@ -1,0 +1,77 @@
+{
+  "result": [
+    {
+      "BusinessUnit": "HX_BU",
+      "TransactionSource": "HX_MANUAL",
+      "TransactionType": "영업매출",
+      "TransactionDate": "2024-12-17",
+      "AccountingDate": "2024-12-17",
+      "TransactionNumber": "ART241217이수임0901",
+      "BillToName": "한국공항",
+      "PaymentTerms": "30 Net",
+      "StructuredPaymentReference": "12월 한국공항 정보시스템 서비스료 청구",
+      "TaxProofType": "10(세금계산서[전자])",
+      "BusinessNumber": "0000",
+      "ReverseIssue": "N",
+      "Email": "iskang@hist.co.kr",
+      "RegisterYN": "Y",
+      "InvoiceDetails": [
+        {
+          "MemoLine": "그룹웨어 수익",
+          "Description": "12월 한국공항 정보시스템 서비스료 청구",
+          "Quantity": 1,
+          "UnitPrice": 1650000,
+          "TaxClassification": "HX_매출과세",
+          "TBC": "Sales Transaction",
+          "CostCenter": "SELSLUG",
+          "Account": 414113,
+          "Project": "V220011"
+        },
+        {
+          "MemoLine": "On_Demand 수익",
+          "Description": "12월 한국공항 정보시스템 서비스료 청구",
+          "Quantity": 1,
+          "UnitPrice": 9620000,
+          "TaxClassification": "HX_매출과세",
+          "TBC": "Sales Transaction",
+          "CostCenter": "SELSCIS",
+          "Account": 414112,
+          "Project": "V090036"
+        },
+        {
+          "MemoLine": "NW운영",
+          "Description": "12월 한국공항 정보시스템 서비스료 청구",
+          "Quantity": 1,
+          "UnitPrice": 20577500,
+          "TaxClassification": "HX_매출과세",
+          "TBC": "Sales Transaction",
+          "CostCenter": "SELSLIN",
+          "Account": 413121,
+          "Project": "V090031"
+        },
+        {
+          "MemoLine": "시스템 유지보수",
+          "Description": "12월 한국공항 정보시스템 서비스료 청구",
+          "Quantity": 1,
+          "UnitPrice": 428000,
+          "TaxClassification": "HX_매출과세",
+          "TBC": "Sales Transaction",
+          "CostCenter": "SELSLIN",
+          "Account": 413111,
+          "Project": "V090032"
+        },
+        {
+          "MemoLine": "DTS/DTO 수익",
+          "Description": "12월 한국공항 정보시스템 서비스료 청구",
+          "Quantity": 1,
+          "UnitPrice": 19245500,
+          "TaxClassification": "HX_매출과세",
+          "TBC": "Sales Transaction",
+          "CostCenter": "SELSLIN",
+          "Account": 414114,
+          "Project": "V080032"
+        }
+      ]
+    }
+  ]
+}

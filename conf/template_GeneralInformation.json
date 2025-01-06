@@ -1,0 +1,17 @@
+{
+  "BusinessUnit": "",
+  "TransactionSource": "",
+  "TransactionType": "",
+  "TransactionDate": "",
+  "AccountingDate": "",
+  "TransactionNumber": "",
+  "BillToName": "",
+  "PaymentTerms": "",
+  "StructuredPaymentReference": "",
+  "TaxProofType": "",
+  "BusinessNumber": "",
+  "ReverseIssue": "",
+  "Email": "",
+  "RegisterYN": "",
+  "InvoiceDetails": []
+}
