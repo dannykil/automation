@@ -1,0 +1,5 @@
+selenium
+webdriver_manager
+python-dateutil
+openpyxl
+natsort
