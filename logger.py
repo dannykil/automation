@@ -29,7 +29,8 @@ class LoggerFactory(object) :
         # formatter = logging.Formatter('[%(asctime)s][%(levelname)s|%(filename)s-%(funcName)s:%(lineno)s] >> %(message)s')    
         # formatter = logging.Formatter('[' + str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')) + '][%(levelname)s|%(filename)s-%(funcName)s:%(lineno)s] >> %(message)s')    
         # formatter = logging.Formatter('[' + str(datetime.now().strftime('%H:%M:%S')) + '][%(filename)s:%(lineno)s] >> %(message)s')    
-        formatter = logging.Formatter('[%(asctime)s][%(filename)s:%(lineno)s] >> %(message)s')    
+        # formatter = logging.Formatter('[%(asctime)s][%(filename)s:%(lineno)s] >> %(message)s') 
+        formatter = logging.Formatter('[%(asctime)s][%(filename)s][%(funcName)s:%(lineno)s] >> %(message)s') 
         
         # Handler 생성
         # StreamHandler를 통해 쉽게 터미널 창에 나타내거나 FileHandler를 통해 log파일에 로그를 기록할 수 있다. 

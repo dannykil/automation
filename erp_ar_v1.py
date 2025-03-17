@@ -19,7 +19,7 @@ import os
 import natsort # 파일명 정렬
 # from install import check_install_YN 
 import importlib as imp
-import imp
+# import imp
 
 def processing_ERP_AR_Transaction(count, issue_cnt, not_issue_cnt, re_count):
 
@@ -28,6 +28,7 @@ def processing_ERP_AR_Transaction(count, issue_cnt, not_issue_cnt, re_count):
         logger.LoggerFactory.create_logger()
 
     with open('./conf/config.json', 'r') as f:
+    # with open('/Users/danniel.kil/Documents/workspace/automation/conf/config.json', 'r') as f:
         install_config = json.load(f)
     
     print(install_config["installed"])
