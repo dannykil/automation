@@ -18,6 +18,29 @@ app.register_blueprint(ar_event)
 def main():
     return jsonify({'message': 'Hello, World!'})
 
+import socket
+
+def get_local_ip():
+    try:
+        # 임의의 외부 호스트에 연결 시도
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))  # Google DNS
+        local_ip = s.getsockname()[0]
+    except socket.error as e:
+        print(f"소켓 오류 발생: {e}")
+        local_ip = None
+    finally:
+        s.close()
+    return local_ip
+
 if __name__ == '__main__':
+    
+    ip_address = get_local_ip()
+
+    if ip_address:
+        print(f"내 로컬 IP 주소: {ip_address}")
+    else:
+        print("로컬 IP 주소를 확인하지 못했습니다.")
+
     # app.run(debug=True, port=5000)
     app.run(host='0.0.0.0', port=5000, debug=True)
