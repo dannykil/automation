@@ -3,6 +3,3 @@ webdriver_manager
 python-dateutil
 openpyxl
 natsort
-flask
-flask-cors
-psycopg2-binary

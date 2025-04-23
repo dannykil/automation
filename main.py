@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
-from userinfo.user_info import userinfo
+from userinfo.userinfo import userinfo
 from ar.ar_job import ar_job
 from ar.ar_info import ar_info
 from ar.ar_event import ar_event

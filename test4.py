@@ -1,9 +1,8 @@
 from flask import Flask, request, jsonify
-import socket
 
 app = Flask(__name__)
 
-# FLASK_APP=test4.py flask run
+
 @app.route('/api/example', methods=['POST'])
 def example_post():
     # JSON 데이터를 가져옵니다.
@@ -22,15 +21,6 @@ def example_post():
     return jsonify({
         'message': f'Hello, {name}! Your age is {age}.'
     }), 200
-
-@app.route('/api/getIP', methods=['GET'])
-def example_get():
-    host = socket.gethostbyname(socket.gethostname()) 
-    print(host)
-
-    return host
-
-    
 
 
 if __name__ == '__main__':
