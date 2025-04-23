@@ -15,3 +15,5 @@ COPY . .
 
 # 어플리케이션 실행 명령어 정의 (여러분의 어플리케이션 진입점을 맞춰주세요)
 CMD ["python", "main.py"]
+
+# gcloud builds triggers update automation-dev --logging=CLOUD_LOGGING_ONLY
