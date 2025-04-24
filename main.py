@@ -7,7 +7,11 @@ from ar.ar_info import ar_info
 from ar.ar_event import ar_event
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": "https://automation-dev-frontend-213242029674.us-central1.run.app"}})
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+CORS(app, resources={r"/api/*": {"origins": "http://0.0.0.0:3000"}})
 CORS(app, resources={r"/api/*": {"origins": "http://localhost:3001"}})
+CORS(app, resources={r"/api/*": {"origins": "http://0.0.0.0:3001"}})
 
 app.register_blueprint(userinfo)
 app.register_blueprint(ar_job)
