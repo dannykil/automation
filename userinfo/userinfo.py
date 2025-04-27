@@ -76,5 +76,58 @@ def insert_new_user_info():
     else:
         return jsonify({"error": "사용자 정보 삽입 실패"}), 500
 
-# if __name__ == '__main__':
-#     app.run(debug=True)
+
+def fetch_user_info(conn, user_id=None):
+    """제공된 ID를 기반으로 PostgreSQL 데이터베이스에서 사용자 정보를 조회하거나, ID가 없으면 전체 사용자 정보를 조회하여 배열 형태로 반환합니다."""
+    cursor = conn.cursor()
+    query = """
+        SELECT id, user_name, account, restart_count, display_yn, created_at
+        FROM user_info
+    """
+    params = ()
+    if user_id is not None:
+        query += " WHERE id = %s"
+        params = (user_id,)
+
+    user_data_list = []
+    try:
+        cursor.execute(query, params)
+        results = cursor.fetchall()
+        for result in results:
+            user_data_list.append({
+                "id": result[0],
+                "user": result[1],
+                "account": result[2],
+                "reStartCount": result[3],
+                "displayYN": result[4],
+                "createdAt": result[5].isoformat() if result[5] else None,
+            })
+    except psycopg2.Error as e:
+        print(f"사용자 정보 조회 실패: {e}")
+    finally:
+        cursor.close()
+    return user_data_list
+
+@userinfo.route('/select', methods=['GET'])
+@userinfo.route('/select/<int:user_id>', methods=['GET'])
+def select_user_info(user_id=None):
+    """GET 요청으로 ID를 받아 특정 사용자 정보를 조회하거나, ID가 없으면 전체 사용자 정보를 조회하여 배열 형태로 JSON 응답합니다."""
+    conn = connect_db()
+
+    if conn is None:
+        return jsonify({"error": "데이터베이스 연결 실패"}), 500
+
+    user_info_list = fetch_user_info(conn, user_id)
+    conn.close()
+
+    if user_id is not None:
+        if user_info_list:
+            return jsonify({"message": f"ID {user_id} 사용자 정보 조회 성공", "data": user_info_list}), 200
+        else:
+            return jsonify({"message": f"ID {user_id}에 해당하는 사용자 정보를 찾을 수 없습니다."}, 404)
+    else:
+        if user_info_list:
+            return jsonify({"message": "전체 사용자 정보 조회 성공", "data": user_info_list}), 200
+        else:
+            return jsonify({"message": "사용자 정보가 없습니다."}, 204) # No Content
+
