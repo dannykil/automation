@@ -5,7 +5,8 @@ from datetime import datetime
 # app = Flask(__name__)
 
 # 환경 변수 또는 보안 파일에서 데이터베이스 연결 정보 로드
-from common import getEnv
+# from common import getEnv
+from common import logger, getEnv
 DB_HOST     = getEnv.get_environment_variable('DB_HOST')
 DB_USER     = getEnv.get_environment_variable('DB_USER')
 DB_PASSWORD = getEnv.get_environment_variable('DB_PASSWORD')
@@ -111,6 +112,8 @@ def fetch_user_info(conn, user_id=None):
 @userinfo.route('/select', methods=['GET'])
 @userinfo.route('/select/<int:user_id>', methods=['GET'])
 def select_user_info(user_id=None):
+    # logger.LoggerFactory._LOGGER.info("/api/userinfo/select/{}".format(user_id))
+    logger.LoggerFactory._LOGGER.info("/api/userinfo/select")
     """GET 요청으로 ID를 받아 특정 사용자 정보를 조회하거나, ID가 없으면 전체 사용자 정보를 조회하여 배열 형태로 JSON 응답합니다."""
     conn = connect_db()
 
