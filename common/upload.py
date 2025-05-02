@@ -23,7 +23,7 @@ bucket = storage_client.bucket(BUCKET_NAME)
 @uploader.route('/upload', methods=['POST'])
 def upload_file():
     print("upload_file() called")
-    
+
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
 
@@ -42,5 +42,5 @@ def upload_file():
 
     return jsonify({'error': 'Something went wrong'}), 500
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+# if __name__ == '__main__':
+#     app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
