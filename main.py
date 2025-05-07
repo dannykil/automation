@@ -8,6 +8,8 @@ from ar.ar_event import ar_event
 from common.log import log
 from common import logger
 from common.upload import uploader
+from common.parcer import parcer
+from common.parser import parser
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "https://automation-dev-frontend-213242029674.us-central1.run.app"}})
@@ -22,6 +24,8 @@ app.register_blueprint(ar_info)
 app.register_blueprint(ar_event)
 app.register_blueprint(log)
 app.register_blueprint(uploader)
+app.register_blueprint(parcer)
+app.register_blueprint(parser)
 
 logger.LoggerFactory.create_logger()
 
