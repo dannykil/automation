@@ -31,7 +31,7 @@ from datetime import datetime
 from flask import Blueprint, request, jsonify
 parser = Blueprint('parser', __name__, url_prefix='/api/parser')
 
-from common import getEnv
+from common import logger, getEnv
 PROJECT_ID    = getEnv.get_environment_variable('PROJECT_ID')
 LOCATION      = getEnv.get_environment_variable('LOCATION')
 PROCESSOR_ID  = getEnv.get_environment_variable('PROCESSOR_ID')
@@ -151,9 +151,12 @@ gcs_file_path_json = "documents_json/document.json"
 @parser.route('/analysis', methods=['POST'])
 def process_document_sample():
     print("process_document_sample() called")
+    logger.LoggerFactory._LOGGER.info("process_document_sample() called")
+    # logger.LoggerFactory._LOGGER.info("")
 
     data = request.get_json()
     print(f"Received data: {data}")
+    logger.LoggerFactory._LOGGER.info("data : ", data)
 
     if not data:
         return jsonify({'error': 'No JSON data received'}), 400
@@ -191,6 +194,7 @@ def process_document_sample():
         name = client.processor_path(project_id, location, processor_id)
 
     # GCS 읽기
+    logger.LoggerFactory._LOGGER.info("GCS 읽기")
     storage_client = storage.Client()
     bucket = storage_client.bucket(BUCKET_NAME)
     blob = bucket.blob(filename)
@@ -219,6 +223,7 @@ def process_document_sample():
     result = client.process_document(request=request_ai)
 
     document = result.document
+    logger.LoggerFactory._LOGGER.info("document.text : ", document.text)    
     print("document.text : ", document.text)
 
     try:
@@ -230,6 +235,7 @@ def process_document_sample():
             os.makedirs(f'./{GCS_FILE_PATH_PARSED}')
             
         parsed_file_name = GCS_FILE_PATH_PARSED + "/" + filename.replace(".pdf", ".txt")
+        logger.LoggerFactory._LOGGER.info("parsed_file_name : ", parsed_file_name)    
         print("parsed_file_name : ", parsed_file_name)
 
         # with open(parsed_file_name, "w", encoding="utf-8") as f:
