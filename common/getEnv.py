@@ -1,4 +1,5 @@
-
+# prompt:
+# 아래 소스코드에 환경에 따라 .env.dev 또는 .env.prd로 구분되는데 Dockerfile에서 실행할 때 명시되는 부분이 없어서 그런걸까?
 from dotenv import load_dotenv
 import os
 import sys
@@ -18,6 +19,7 @@ def get_environment_variable(key):
     return os.getenv(key)
 
 # 환경 변수 로드 (빌드 시 환경에 따라 파일 선택)
+print("ENV : ", os.environ.get('ENV'))
 if os.environ.get('ENV') == 'prd':
     load_environment_variables('.env.prd')
 else:
