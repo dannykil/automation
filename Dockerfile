@@ -6,6 +6,7 @@ WORKDIR /app
 
 # requirements.txt 파일 복사
 COPY requirements.txt .
+COPY .env.dev /app/.env.dev
 
 # 필요한 패키지 설치
 RUN pip install -r requirements.txt --no-cache-dir
@@ -17,3 +18,8 @@ COPY . .
 CMD ["python", "main.py"]
 
 # gcloud builds triggers update automation-dev --logging=CLOUD_LOGGING_ONLY
+
+# 
+# docker build -t automation_backend .
+# docker run -d -p 5000:5000 automation_backend
+# docker exec -it a3e541cd552b /bin/sh
