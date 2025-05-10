@@ -474,24 +474,36 @@ def process_document_sample():
                 # else:
                 #     return jsonify({'error': 'Failed to retrieve order data after insertion'}), 500
 
-            except FileNotFoundError:
+            except FileNotFoundError as e:
                 print(f"오류: {json_file_name} 파일을 찾을 수 없습니다.")
+                result = {"status": "failed", "message": "{}".format(e)}
+                return jsonify(result)
             except json.JSONDecodeError as e:
                 print(f"오류: JSON 파일 디코딩 실패: {e}")
+                result = {"status": "failed", "message": "{}".format(e)}
+                return jsonify(result)
             except KeyError as e:
                 print(f"오류: JSON 데이터에 필요한 키가 없습니다: {e}")
+                result = {"status": "failed", "message": "{}".format(e)}
+                return jsonify(result)
             except Exception as e:
                 print(f"예상치 못한 오류가 발생했습니다: {e}")
+                result = {"status": "failed", "message": "{}".format(e)}
+                return jsonify(result)
             finally:
                 if conn:
                     conn.close() # Close connection
         
         except Exception as e:
             print(f"오류 발생: {e}")
+            result = {"status": "failed", "message": "{}".format(e)}
+            return jsonify(result)
         
 
     except Exception as e:
         print(f"오류 발생: {e}")
+        result = {"status": "failed", "message": "{}".format(e)}
+        return jsonify(result)
     
 
     # 임시 응답 (실제 분석 로직 구현 필요)
