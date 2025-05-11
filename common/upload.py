@@ -12,7 +12,7 @@ from datetime import datetime
 uploader = Blueprint('uploader', __name__, url_prefix='/api/file')
 
 # Google Cloud Storage 설정
-from common import getEnv
+from common import logger, getEnv
 PROJECT_ID = getEnv.get_environment_variable('PROJECT_ID')
 BUCKET_NAME = getEnv.get_environment_variable('BUCKET_NAME')
 print("PROJECT_ID  : ", PROJECT_ID)
@@ -44,6 +44,7 @@ def get_db_connection():
 @uploader.route('/upload', methods=['POST'])
 def upload_file():
     print("upload_file() called")
+    logger.LoggerFactory._LOGGER.info("upload_file() called")
 
     if 'title' not in request.form:
         return jsonify({'error': 'Title is required'}), 400
@@ -106,6 +107,8 @@ def upload_file():
 @uploader.route('/boards', methods=['GET'])
 def get_boards_with_files():
     print("get_boards_with_files() called")
+    logger.LoggerFactory._LOGGER.info("get_boards_with_files() called")
+
     conn = None
     try:
         conn = get_db_connection()

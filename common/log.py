@@ -12,13 +12,11 @@ def read_ndjson_log(log_date_str):
     print("year : ", year)
     print("month : ", month)
     log_file_path = os.path.join(LOG_BASE_DIR, year, month, f"{log_date_str}.log")
-    print("1")
 
     log_entries = []
+    
     try:
-        print("2")
         with open(log_file_path, 'r', encoding='utf-8') as f:
-            print("3")
             for line in f:
                 try:
                     import json
