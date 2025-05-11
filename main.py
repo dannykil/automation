@@ -5,7 +5,8 @@ from userinfo.userinfo import userinfo
 from ar.ar_job import ar_job
 from ar.ar_info import ar_info
 from ar.ar_event import ar_event
-from common.log import log, start_scheduler
+# from common.log import log, start_scheduler
+from common.log import log
 from common import logger
 from common.upload import uploader
 from common.parcer import parcer
