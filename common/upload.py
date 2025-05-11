@@ -31,6 +31,7 @@ DB_USER = getEnv.get_environment_variable('DB_USER')
 DB_PASSWORD = getEnv.get_environment_variable('DB_PASSWORD')
 
 def get_db_connection():
+    logger.LoggerFactory._LOGGER.info("get_db_connection() called")
     conn = psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD)
     return conn
 
@@ -173,6 +174,7 @@ def get_boards_with_files():
 
     except Exception as e:
         print(f"Error fetching boards and files: {e}")
+        logger.LoggerFactory._LOGGER.info(f"Error fetching boards and files: {e}")
         return jsonify({'error': f'Failed to fetch boards and files: {str(e)}'}), 500
     finally:
         if conn:
