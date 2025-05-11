@@ -1,10 +1,16 @@
 # prompt:
 # write_log_api() 함수에서 현재 로컬에 있는 로그를 GCS로 업로드하는 기능을 추가해줘.
 # 로컬 경로는 read_ndjson_log(log_date_str) 함수에서 log_file_path 참고해줘.
+
+# prompt:
+# 스케줄링으로 upload_log_api() 함수를 매시간 59분에 호출해서 GCS에 로그를 업로드 하고 있는데,
+# 업로드 하기 전에 기존 로그파일을 백업하는 기능을 추가해줘.
+# 백업 파일명은 YYYYMMDD.log.bak 형식으로 같은 경로에 저장해줘.
 import os
 from flask import Flask, request, jsonify, Blueprint
 from datetime import datetime
 from google.cloud import storage
+import shutil
 
 import schedule
 import time
@@ -65,6 +71,24 @@ def read_log_api(log_date):
         return jsonify({"message": f"{log_date} 로그 파일을 찾을 수 없습니다."}, 404)
 
 
+def backup_log_file(log_file_path, log_date_str):
+    """로그 파일을 백업합니다."""
+    logger.LoggerFactory._LOGGER.info("backup_log_file(log_file_path, log_date_str) called")
+
+    backup_filename = f"{log_date_str}.log.bak"
+    backup_path = os.path.join(os.path.dirname(log_file_path), backup_filename)
+
+    try:
+        shutil.copy2(log_file_path, backup_path)  # copy2는 메타데이터도 복사
+        print(f"로그 파일 {log_file_path}를 {backup_path}로 백업 완료.")
+        logger.LoggerFactory._LOGGER.info(f"로그 파일 {log_file_path}를 {backup_path}로 백업 완료.")
+        return True
+    except Exception as e:
+        print(f"로그 파일 백업 오류: {e}")
+        logger.LoggerFactory._LOGGER.error(f"로그 파일 백업 오류: {e}")
+        return False
+    
+
 def upload_log_to_gcs(log_file_path, year, month, log_date_str):
     """로컬 로그 파일을 Google Cloud Storage에 업로드합니다."""
     print("upload_log_to_gcs() called")
@@ -86,10 +110,10 @@ def upload_log_to_gcs(log_file_path, year, month, log_date_str):
         return False
     
 
-@log.route('/write', methods=['GET'])
-def write_log_api():
-    print("/api/log/write called")
-    logger.LoggerFactory._LOGGER.info("/api/log/write called")
+@log.route('/upload', methods=['GET'])
+def upload_log_api():
+    print("/api/log/upload called")
+    logger.LoggerFactory._LOGGER.info("/api/log/upload called")
 
     # 현재 날짜를 YYYYMMDD 형식으로 생성
     now = datetime.now()
@@ -100,24 +124,32 @@ def write_log_api():
     month = log_date_str[4:6]
     log_file_path = os.path.join(LOG_BASE_DIR, year, month, f"{log_date_str}.log")
 
-    # GCS로 로그 파일 업로드
-    # if upload_log_to_gcs(log_file_path, log_date_str):
-    if upload_log_to_gcs(log_file_path, year, month, log_date_str):
-        return jsonify({"message": f"{log_date_str} 로그 파일 GCS 업로드 요청 성공"}), 200
+    # # GCS로 로그 파일 업로드
+    # if upload_log_to_gcs(log_file_path, year, month, log_date_str):
+    #     return jsonify({"message": f"{log_date_str} 로그 파일 GCS 업로드 요청 성공"}), 200
+    # else:
+    #     return jsonify({"error": f"{log_date_str} 로그 파일 GCS 업로드 실패"}), 500
+    
+    # 백업 먼저 수행
+    if backup_log_file(log_file_path, log_date_str):
+        # GCS로 로그 파일 업로드
+        if upload_log_to_gcs(log_file_path, year, month, log_date_str):
+            return jsonify({"message": f"{log_date_str} 로그 파일 백업 및 GCS 업로드 요청 성공"}), 200
+        else:
+            return jsonify({"error": f"{log_date_str} 로그 파일 GCS 업로드 실패"}), 500
     else:
-        return jsonify({"error": f"{log_date_str} 로그 파일 GCS 업로드 실패"}), 500
+        return jsonify({"error": f"{log_date_str} 로그 파일 백업 실패"}), 500
 
 
-def run_scheduler(app):
-    with app.app_context():
-        # schedule.every().hour.at(":00").do(_hourly_log_upload_task)
-        schedule.every().hour.at(":59").do(write_log_api)
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
+# def run_scheduler(app):
+#     with app.app_context():
+#         schedule.every().hour.at(":59").do(upload_log_api)
+#         while True:
+#             schedule.run_pending()
+#             time.sleep(1)
 
 
-def start_scheduler(app):
-    scheduler_thread = Thread(target=run_scheduler, args=(app,)) # app 객체를 인자로 전달
-    scheduler_thread.daemon = True
-    scheduler_thread.start()
+# def start_scheduler(app):
+#     scheduler_thread = Thread(target=run_scheduler, args=(app,)) # app 객체를 인자로 전달
+#     scheduler_thread.daemon = True
+#     scheduler_thread.start()

@@ -90,5 +90,5 @@ if __name__ == '__main__':
             print("공인 IP 주소를 확인하지 못했습니다.")
 
     # app.run(debug=True, port=5000)
-    start_scheduler(app)
+    # start_scheduler(app)
     app.run(host='0.0.0.0', port=5000, debug=True)
