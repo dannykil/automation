@@ -5,7 +5,7 @@ from userinfo.userinfo import userinfo
 from ar.ar_job import ar_job
 from ar.ar_info import ar_info
 from ar.ar_event import ar_event
-from common.log import log
+from common.log import log, start_scheduler
 from common import logger
 from common.upload import uploader
 from common.parcer import parcer
@@ -90,4 +90,5 @@ if __name__ == '__main__':
             print("공인 IP 주소를 확인하지 못했습니다.")
 
     # app.run(debug=True, port=5000)
+    start_scheduler(app)
     app.run(host='0.0.0.0', port=5000, debug=True)

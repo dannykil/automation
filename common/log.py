@@ -6,6 +6,9 @@ from flask import Flask, request, jsonify, Blueprint
 from datetime import datetime
 from google.cloud import storage
 
+import schedule
+import time
+from threading import Thread
 
 # Google Cloud Storage 설정
 from common import logger, getEnv
@@ -105,3 +108,16 @@ def write_log_api():
         return jsonify({"error": f"{log_date_str} 로그 파일 GCS 업로드 실패"}), 500
 
 
+def run_scheduler(app):
+    with app.app_context():
+        # schedule.every().hour.at(":00").do(_hourly_log_upload_task)
+        schedule.every().hour.at(":59").do(write_log_api)
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+
+
+def start_scheduler(app):
+    scheduler_thread = Thread(target=run_scheduler, args=(app,)) # app 객체를 인자로 전달
+    scheduler_thread.daemon = True
+    scheduler_thread.start()
