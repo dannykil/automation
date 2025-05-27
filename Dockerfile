@@ -1,6 +1,19 @@
 # prompt:
-# 이렇게해 실행하면 오류가 나는데 어느 부분이 잘못된거야?
+# 내가 사용하고 있는 이미지를 참고해서 수정해줘
 FROM python:3.11-slim-buster
+
+# 한국 미러 변경 (보안 업데이트 목록 오류 방지)
+# RUN sed -i 's#http://deb.debian.org#http://ftp.kr.debian.org/debian#g' /etc/apt/sources.list
+# # 보안 업데이트 목록 파일이 없을 경우 오류 방지
+# RUN if [ -f /etc/apt/sources.list.d/debian-security.list ]; then \
+#     sed -i 's#http://security.debian.org#http://security.debian.org#g' /etc/apt/sources.list.d/debian-security.list; \
+# fi
+
+# RUN sed -i 's#http://deb.debian.org#http://ftp.kr.debian.org/debian#g' /etc/apt/sources.list
+# RUN sed -i 's#http://security.debian.org#http://security.debian.org#g' /etc/apt/sources.list.d/debian-security.list
+# RUN apt-get update && apt-get install -y gcsfuse
+# RUN apt-get update
+# RUN apt-get install -y gcsfuse 
 
 # 환경 변수 설정 (기본: dev)
 ENV ENV=dev
@@ -12,6 +25,7 @@ WORKDIR /app
 COPY requirements.txt .
 # COPY .env.dev /app/.env.dev
 COPY .env.dev .
+# COPY application_default_credentials.json .
 
 # 필요한 패키지 설치
 RUN pip install -r requirements.txt --no-cache-dir
@@ -26,11 +40,15 @@ CMD ["python", "main.py"]
 
 # 
 # docker build -t automation_backend .
+# docker run -d -e GOOGLE_APPLICATION_CREDENTIALS=./application_default_credentials.json -p 5000:5000 automation_backend
+
+
 # docker run -d -p 5000:5000 automation_backend
 # docker run -e ENV=dev -d -p 5000:5000 automation_backend
 # docker run -v ~/.config/gcloud:/root/.config/gcloud -e GOOGLE_APPLICATION_CREDENTIALS=/root/.config/gcloud/application_default_credentials.json -p 8000:8000 <이미지_이름>
 # /Users/danniel.kil/.config/gcloud/application_default_credentials.json
-# docker run -e GOOGLE_APPLICATION_CREDENTIALS=/Users/danniel.kil/.config/gcloud/application_default_credentials.json -d -p 5000:5000 automation_backend
+# docker run -v ~/.config/gcloud:/root/.config/gcloud -e GOOGLE_APPLICATION_CREDENTIALS=/Users/danniel.kil/.config/gcloud/application_default_credentials.json -p 5000:5000 automation_backend
+# docker run -e GOOGLE_APPLICATION_CREDENTIALS=./application_default_credentials.json -p 5000:5000 automation_backend
 # docker exec -it a3e541cd552b /bin/sh
 
 # ENV=dev python main.py

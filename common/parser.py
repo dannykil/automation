@@ -65,85 +65,6 @@ gcs_bucket_name = BUCKET_NAME
 gcs_file_path = "documents_parsed/parsed_document.txt"  # GCS에 저장될 파일 경로 (버킷 이름 제외)
 gcs_file_path_json = "documents_json/document.json"  
 
-# @parser.route('/test2', methods=['POST'])
-# def process_document_sample2():
-#     print("process_document_sample() called")
-
-#     data = request.get_json()
-#     print(f"Received data: {data}")
-
-#     if not data:
-#         return jsonify({'error': 'No JSON data received'}), 400
-
-#     file_id = data.get('id')
-#     board_id = data.get('board_id')
-#     filename = data.get('filename')
-#     filepath = data.get('filepath')
-
-#     print(f"Received file ID: {file_id}")
-#     print(f"Received board ID: {board_id}")
-#     print(f"Received filename: {filename}")
-#     print(f"Received filepath: {filepath}")
-
-#     # orders 테이블에 직접 삽입
-#     conn = get_db_connection()
-#     cur = conn.cursor()
-
-#     # 삽입된 데이터 조회 (board_id 사용)
-
-#     # prompt:
-#     # purchase_order에서 board_id를 기준으로 Select해서 리액트로 개발된 프론트엔드에 전달할 수 있도록 json으로 변환해서 response로 전달해줘.
-#     select_sql = """
-#         SELECT id, board_id, file_id, filepath, created_at, ordering_company, ordering_manager, order_date, order_item, order_quantity, order_amount, order_number, delivery_company, delivery_deadline, customer_manager
-#         FROM purchase_order
-#         WHERE board_id = %s;
-#     """
-#     cur.execute(select_sql, (board_id,))
-#     result = cur.fetchall()
-#     print("result : ", result)
-
-#     if result:
-#         # 컬럼명과 값을 매핑하는 딕셔너리 생성
-#         columns = [column[0] for column in cur.description]
-#         order_data_from_db = dict(zip(columns, result))
-
-#         # analysiss = []
-#         # for analysis in result:
-#         #     analysis = {
-#         #         'ordering_company': analysis[5],
-#         #         'order_date': analysis[7],
-#         #         'order_item': analysis[8],
-#         #         'order_quantity': analysis[9],
-#         #         'order_amount': analysis[10]
-#         #     }
-#         #     analysiss.append(analysis)
-#         # analysis['analysis'] = analysiss
-#         # files_data = cur.fetchall()
-#         analysis = {}
-#         analysiss = []
-#         for analysis_row in result:
-#             analysis = {
-#                 'ordering_company': analysis_row[5],
-#                 'order_date': analysis_row[7],
-#                 'order_item': analysis_row[8],
-#                 'order_quantity': analysis_row[9],
-#                 'order_amount': analysis_row[10]
-#             }
-#             analysiss.append(analysis)
-#         # analysis['analysis'] = analysiss
-#         # print(analysis['analysis'])
-#         print("analysiss : ", analysiss)
-
-#         cur.close()
-#         conn.close()
-
-#         return jsonify(analysiss), 200 # Return the result
-#         # return jsonify(analysiss), 200 # Return the result
-
-#     else:
-#         return jsonify({'error': 'Failed to retrieve order data after insertion'}), 500
-
-
 # prompt:
 # 파일 분석이 끝나면 purchase_order 테이블에 Insert하는 부분이 있어.
 # Insert가 정상적으로 완료되면 DB files 테이블의 상태값(analysis_yn)을 'Y'로 업데이트하는 기능을 추가해줘.
@@ -201,30 +122,30 @@ def process_document_sample():
     image_content = blob.download_as_bytes()  # GCS에서 파일 다운로드
 
     # Load binary data
-    raw_document = documentai.RawDocument(content=image_content, mime_type=mime_type)
+    # raw_document = documentai.RawDocument(content=image_content, mime_type=mime_type)
 
-    # For more information: https://cloud.google.com/document-ai/docs/reference/rest/v1/ProcessOptions
-    # Optional: Additional configurations for processing.
-    process_options = documentai.ProcessOptions(
-        # Process only specific pages
-        individual_page_selector=documentai.ProcessOptions.IndividualPageSelector(
-            pages=[1]
-        )
-    )
+    # # For more information: https://cloud.google.com/document-ai/docs/reference/rest/v1/ProcessOptions
+    # # Optional: Additional configurations for processing.
+    # process_options = documentai.ProcessOptions(
+    #     # Process only specific pages
+    #     individual_page_selector=documentai.ProcessOptions.IndividualPageSelector(
+    #         pages=[1]
+    #     )
+    # )
 
-    # Configure the process request
-    request_ai = documentai.ProcessRequest(
-        name=name,
-        raw_document=raw_document,
-        field_mask=field_mask,
-        process_options=process_options,
-    )
+    # # Configure the process request
+    # request_ai = documentai.ProcessRequest(
+    #     name=name,
+    #     raw_document=raw_document,
+    #     field_mask=field_mask,
+    #     process_options=process_options,
+    # )
 
-    result = client.process_document(request=request_ai)
+    # result = client.process_document(request=request_ai)
 
-    document = result.document
-    logger.LoggerFactory._LOGGER.info("document.text : ", document.text)    
-    print("document.text : ", document.text)
+    # document = result.document
+    # logger.LoggerFactory._LOGGER.info("document.text : ", document.text)    
+    # print("document.text : ", document.text)
 
     try:
         # 1) txt 파일로 저장
@@ -392,33 +313,6 @@ def process_document_sample():
                 print(f"files 테이블의 analysis_yn이 'Y'로 업데이트되었습니다. file_id: {file_id}")
 
 
-
-                # select_sql = """
-                #     SELECT id, board_id, file_id, filepath, created_at, ordering_company, ordering_manager, order_date, order_item, order_quantity, order_amount, order_number, delivery_company, delivery_deadline, customer_manager
-                #     FROM purchase_order
-                #     WHERE board_id = %s;
-                # """
-                # cur.execute(select_sql, (board_id,))
-                # result = cur.fetchall()
-
-                # if result:
-                #     analysiss = []
-                #     for analysis_row in result:
-                #         analysis = {
-                #             'ordering_company': analysis_row[5],
-                #             'order_date': analysis_row[7],
-                #             'order_item': analysis_row[8],
-                #             'order_quantity': analysis_row[9],
-                #             'order_amount': analysis_row[10]
-                #         }
-                #         analysiss.append(analysis)
-
-                #     cur.close()
-                #     conn.close()
-
-                #     return jsonify(analysiss), 200 # Return the result
-
-
                 # boards 테이블의 모든 데이터 조회
                 cur.execute("SELECT id, title, created_at, updated_at FROM boards ORDER BY created_at DESC;")
                 boards_data = cur.fetchall()
@@ -511,340 +405,6 @@ def process_document_sample():
         result = {"status": "failed", "message": "{}".format(e)}
         return jsonify(result)
     
-
-    # 임시 응답 (실제 분석 로직 구현 필요)
-    # return jsonify({'message': f'Processing file: {filename} (ID: {file_id}, Board ID: {board_id})'}), 200
-
-# prompt:
-# 1) process_document_sample()에서 분석이 끝나고 GCS에 파일 업로드까지 끝나면 id와 board_id를 조건으로해서. DB files 테이블의 상태값(analysis_yn)을 'Y'로 업데이트 해줘.
-
-# prompt:
-# Document AI API를 호출해서 pdf 문서 내 텍스트를 추출하는 함수인데 
-# 이 부분에서 에러가 나고 있어. with open(file_path, "rb") as image: 
-# 이게 로컬에서 파일을 읽어오는데 난 GCS에 업로드된 파일을 읽어오고 싶어.
-# 소스코드 참고해서 수정해줘.
-# @parser.route('/analysis', methods=['POST'])
-# def analysis_document_sample():
-#     print("process_document_sample() called")
-# # def process_document_sample(
-# #     project_id: str,
-# #     location: str,
-# #     processor_id: str,
-# #     file_path: str,
-# #     mime_type: str,
-# #     field_mask: Optional[str] = None,
-# #     processor_version_id: Optional[str] = None,
-# # ) -> None:
-#     # You must set the `api_endpoint` if you use a location other than "us".
-
-#     # 1. Document AI 처리
-#     opts = ClientOptions(api_endpoint=f"{location}-documentai.googleapis.com")
-
-#     client = documentai.DocumentProcessorServiceClient(client_options=opts)
-
-#     if processor_version_id:
-#         # The full resource name of the processor version, e.g.:
-#         # `projects/{project_id}/locations/{location}/processors/{processor_id}/processorVersions/{processor_version_id}`
-#         name = client.processor_version_path(
-#             project_id, location, processor_id, processor_version_id
-#         )
-#     else:
-#         # The full resource name of the processor, e.g.:
-#         # `projects/{project_id}/locations/{location}/processors/{processor_id}`
-#         name = client.processor_path(project_id, location, processor_id)
-
-#     # Read the file into memory
-#     # with open(file_path, "rb") as image:
-#     #     image_content = image.read()
-
-
-#     # GCS 읽기
-#     storage_client = storage.Client()
-    
-#     # file_path 예: "gs://your-bucket/your-file.pdf"
-    
-#     # match = re.match(r"gs://([^/]+)/(.*)", file_path)
-#     # if not match:
-#     #     raise ValueError(f"잘못된 GCS URI: {file_path}")
-#     # bucket_name, object_name = match.groups()
-#     bucket = storage_client.bucket(BUCKET_NAME)
-#     blob = bucket.blob(GCS_FILE_PATH)
-#     image_content = blob.download_as_bytes()  # GCS에서 파일 다운로드
-
-#     # Load binary data
-#     raw_document = documentai.RawDocument(content=image_content, mime_type=mime_type)
-
-#     # For more information: https://cloud.google.com/document-ai/docs/reference/rest/v1/ProcessOptions
-#     # Optional: Additional configurations for processing.
-#     process_options = documentai.ProcessOptions(
-#         # Process only specific pages
-#         individual_page_selector=documentai.ProcessOptions.IndividualPageSelector(
-#             pages=[1]
-#         )
-#     )
-
-#     # Configure the process request
-#     request = documentai.ProcessRequest(
-#         name=name,
-#         raw_document=raw_document,
-#         field_mask=field_mask,
-#         process_options=process_options,
-#     )
-
-#     result = client.process_document(request=request)
-
-#     # For a full list of `Document` object attributes, reference this page:
-#     # https://cloud.google.com/document-ai/docs/reference/rest/v1/Document
-#     document = result.document
-
-#     # Read the text recognition output from the processor
-#     print("The document contains the following text:")
-#     # print(result.document.entity_extraction.form_fields)
-
-#     # return document.text
-
-#     # 2. Document AI 응답 처리 및 GCS 저장
-#     """
-#     Document AI API의 raw 응답 전체 내용을 txt 파일로 저장하고 GCS에 업로드합니다.
-
-#     Args:
-#         raw_response: Document AI API로부터 받은 raw 응답 (문자열).
-#         gcs_bucket_name: 업로드할 GCS 버킷 이름.
-#         gcs_file_path: GCS에 저장될 파일 경로 (버킷 이름 제외).
-#     """
-#     try:
-#         # 1) txt 파일로 저장
-#         local_file_name = "document_ai_raw_response.txt"
-#         with open(local_file_name, "w", encoding="utf-8") as f:
-#             f.write(document.text)
-#         print(f"Raw 응답을 '{local_file_name}' 파일로 저장했습니다.")
-
-#         # 2) GCS에 업로드
-#         storage_client = storage.Client()
-
-#         print(gcs_bucket_name)
-#         bucket = storage_client.bucket(gcs_bucket_name)
-
-#         print(gcs_file_path)
-#         # blob = bucket.blob(gcs_file_path)
-#         blob = bucket.blob(GCS_FILE_PATH_PARSED + local_file_name)
-
-#         print(local_file_name)
-#         blob.upload_from_filename(local_file_name)
-#         print(f"'{local_file_name}' 파일을 gs://{GCS_FILE_PATH_PARSED}/{gcs_file_path} 에 업로드했습니다.")
-
-#         # 로컬 파일 삭제 (선택 사항)
-#         # os.remove(local_file_name)
-#         # print(f"로컬 파일 '{local_file_name}'을 삭제했습니다.")
-
-#         storage_client = storage.Client()
-#         bucket = storage_client.bucket(gcs_bucket_name)
-#         blob = bucket.blob(gcs_file_path)
-#         file_content = blob.download_as_text(encoding="utf-8")
-#         location = "us-central1"  # GCS 버킷의 위치에 맞게 변경하세요. 
-
-#         client = genai.Client(vertexai=True, project=project_id, location=location)
-
-#         prompt = """
-#             \n\n
-#             아래의 Instruction을 기준으로 검수확인서의 내용을 json으로 변환해줘.
-
-#             문서양식1. 검수확인서
-#                 1) 발주처
-#                 2) 발주담당자
-#                 3) 발주일자
-#                 4) 발주품목
-#                 5) 발주수량
-#                 6) 발주금액
-#                 7) 주문번호
-#                 8) 납품처
-#                 9) 납품기한
-#                 10) 고객담당자
-            
-#             ** Instruction **
-#             1) 이외의 모든 내용은 무시하고 json으로 변환해줘.
-#             2) json 변환 시 key:value에서 key는 반드시 제시된 영어로 변환해줘(DB Insert를 위해 table의 column명과 동일하게 맞춘 상태).
-#             3) 값이 없는 경우는 null로 변환해줘.
-#             4) response로 전달하는 내용에 json외 어떠한 데이터나 특수문자도 포함되지 않도록 해줘. jsonify로 바로 변환해서 사용할 수 있도록 해줘.
-#         """
-
-#         contents=f"""
-#             {prompt}
-
-#             여기서부터가 내용의 시작이야.
-#             {file_content}
-#             """
-        
-#         print(contents)
-
-#         response = client.models.generate_content(
-#             model="gemini-2.0-flash-001",
-#             # contents="Explain bubble sort to me.",
-#             contents=contents
-#         )
-        
-#         print(response.text)
-#         cleaned_data = response.text.replace("```json", "").replace("```", "")
-#         json_object = json.loads(cleaned_data)
-
-#         try:
-#             # 1) txt 파일로 저장
-#             local_file_name = "document.json"
-#             with open(local_file_name, "w", encoding="utf-8") as f:
-#                 f.write(cleaned_data)
-#             print(f"Raw 응답을 '{local_file_name}' 파일로 저장했습니다.")
-
-#             # 2) GCS에 업로드
-#             storage_client = storage.Client()
-
-#             print(gcs_bucket_name)
-#             bucket = storage_client.bucket(gcs_bucket_name)
-
-#             print(gcs_file_path_json)
-#             blob = bucket.blob(gcs_file_path_json)
-
-#             # local_file_name = "document_ai_raw_response.txt"
-
-#             # print(local_file_name)
-#             blob.upload_from_filename(local_file_name)
-#             print(f"'{local_file_name}' 파일을 gs://{gcs_bucket_name}/{gcs_file_path_json} 에 업로드했습니다.")
-        
-#         except Exception as e:
-#             print(f"오류 발생: {e}")
-
-#     except Exception as e:
-#         print(f"오류 발생: {e}")
-    
-#     return document.text
-
-
-# # prompt:
-# # 
-# @parser.route('/read', methods=['POST'])
-# def read_file_from_gcs():
-#     """GCS에서 파일을 읽어 내용을 문자열로 반환합니다."""
-
-#     storage_client = storage.Client()
-#     bucket = storage_client.bucket(gcs_bucket_name)
-#     blob = bucket.blob(gcs_file_path)
-#     file_content = blob.download_as_text(encoding="utf-8")
-#     location = "us-central1"  # GCS 버킷의 위치에 맞게 변경하세요. 
-#     # location = "global"
-
-#     # API_KEY = "AIzaSyD8YpLGhZhNw_Bn13......."
-
-#     # client = genai.Client(vertexai=True, api_key=API_KEY)
-#     client = genai.Client(vertexai=True, project=project_id, location=location)
-
-#     prompt = """
-#         \n\n
-#         아래의 Instruction을 기준으로 검수확인서의 내용을 json으로 변환해줘.
-
-#         문서양식1. 검수확인서
-#             1) 발주처
-#             2) 발주담당자
-#             3) 발주일자
-#             4) 발주품목
-#             5) 발주수량
-#             6) 발주금액
-#             7) 주문번호
-#             8) 납품처
-#             9) 납품기한
-#             10) 고객담당자
-        
-#         ** Instruction **
-#         1) 이외의 모든 내용은 무시하고 json으로 변환해줘.
-#         2) json 변환 시 key:value에서 key는 반드시 제시된 영어로 변환해줘(DB Insert를 위해 table의 column명과 동일하게 맞춘 상태).
-#         3) 값이 없는 경우는 null로 변환해줘.
-#         4) response로 전달하는 내용에 json외 어떠한 데이터나 특수문자도 포함되지 않도록 해줘. jsonify로 바로 변환해서 사용할 수 있도록 해줘.
-#     """
-
-#     contents=f"""
-#         {prompt}
-
-#         여기서부터가 내용의 시작이야.
-#         {file_content}
-#         """
-    
-#     print(contents)
-
-#     response = client.models.generate_content(
-#         model="gemini-2.0-flash-001",
-#         # contents="Explain bubble sort to me.",
-#         contents=contents
-#     )
-    
-#     print(response.text)
-#     cleaned_data = response.text.replace("```json", "").replace("```", "")
-#     json_object = json.loads(cleaned_data)
-
-#     try:
-#         # 1) txt 파일로 저장
-#         local_file_name = "document.json"
-#         with open(local_file_name, "w", encoding="utf-8") as f:
-#             f.write(cleaned_data)
-#         print(f"Raw 응답을 '{local_file_name}' 파일로 저장했습니다.")
-
-#         # 2) GCS에 업로드
-#         storage_client = storage.Client()
-
-#         print(gcs_bucket_name)
-#         bucket = storage_client.bucket(gcs_bucket_name)
-
-#         print(gcs_file_path_json)
-#         blob = bucket.blob(gcs_file_path_json)
-
-#         # local_file_name = "document_ai_raw_response.txt"
-
-#         # print(local_file_name)
-#         blob.upload_from_filename(local_file_name)
-#         print(f"'{local_file_name}' 파일을 gs://{gcs_bucket_name}/{gcs_file_path_json} 에 업로드했습니다.")
-
-#         # 로컬 파일 삭제 (선택 사항)
-#         # os.remove(local_file_name)
-#         # print(f"로컬 파일 '{local_file_name}'을 삭제했습니다.")
-
-#     except Exception as e:
-#         print(f"오류 발생: {e}")
-
-#     # return file_content
-#     # return response.text
-#     return json_object
-
-# 검수확인서
-# 주문번호
-# HX-PO-15911
-# 납품처
-# 한진정보통신
-# 고객담당자
-# 김형곤 차장
-# 연락처
-# 010-3926-3964
-# 용
-# 도
-# 대한항공 전산장비(아이폰케이블 3m*15 개) 판매
-# 품명
-# | 세부사양
-# 수량
-# S/N
-# 납품처
-# IT1002163
-# cable, 케이블, ~ 벨
-# 15
-# 대한항공
-# 킨,~,CAA001bt3MWH^3m
-# 상기의 물품을 정히 검수 하였음을 확인합니다.
-# 납품장소 : 서울특별시 강서구 대한항공 운항기술팀
-# 납품기한 : 2025 년 04 월 15 일납품일 : 2025 년 04월 01일검수일 : 2025 년 04 월 01일
-# ※ 품명 및 수량 등을 확인할 수 있도록 사진 필히 첨부 요망
-# ※ 납품확인서 첨부
-# 검수요청자
-# 검수자
-# 업 체 : 디지월드
-# 업 체 : 한진정보통신
-# 담당자 : 안효진
-# 담당자 : 김형곤 차장 인
-# 신용
 
 
 # 위 내용에서 아래 항목들만 골라서 json으로 변환해줘.

@@ -24,6 +24,8 @@ CREATE TABLE boards (
     title VARCHAR(255)
 );
 
+-- prompt:
+-- postgres db 테이블에서 analysis_yn라는 이름으로 char(1) 칼럼을 추가해줘. default는 'N'으로 해줘.
 CREATE TABLE files (
     id SERIAL PRIMARY KEY,
     board_id INTEGER NOT NULL,
